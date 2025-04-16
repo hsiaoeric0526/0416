@@ -505,11 +505,11 @@ const CardEffects = (() => {
             cardElement.innerHTML = `
                 <div class="card game-card h-100 ${!isAffordable ? 'card-disabled' : ''}" data-card-id="${card.id}">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>${card.name}</span>
+                        <span class="card-title">${card.name}</span>
                         <span class="card-cost">${card.cost}</span>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">${card.description}</p>
+                        <p class="card-text small mb-0">${card.description}</p>
                     </div>
                 </div>
             `;

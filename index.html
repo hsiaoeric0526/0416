@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-3">
         <!-- 遊戲初始化區域 -->
         <div id="game-init" class="row mb-4">
             <div class="col-12 text-center">
@@ -46,115 +46,100 @@
 
         <!-- 遊戲主區域 (初始隱藏) -->
         <div id="game-board" class="d-none">
-            <!-- 回合指示器 -->
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <div class="turn-indicator card shadow">
-                        <div class="card-body">
-                            <h2 class="mb-0">第 <span id="turn-counter">1</span> 回合</h2>
-                            <h3 class="current-player mt-2">輪到：<span id="current-player-name">玩家 A</span></h3>
+            <div class="main-content-wrapper">
+                <div class="row mb-3">
+                    <!-- 左側面板：玩家狀態 + 回合信息 -->
+                    <div class="col-md-4">
+                        <!-- 回合指示器 -->
+                        <div class="mb-3">
+                            <div class="turn-indicator card shadow">
+                                <div class="card-body py-2">
+                                    <h4 class="mb-0">第 <span id="turn-counter">1</span> 回合</h4>
+                                    <h5 class="current-player mt-1">輪到：<span id="current-player-name">玩家 A</span></h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 玩家狀態 -->
+                        <div class="player-panels">
+                            <div id="player-a-panel" class="player-panel card shadow active-player mb-3">
+                                <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                                    <h5 id="player-a-display-name" class="mb-0">玩家 A</h5>
+                                    <span class="badge bg-primary">先手</span>
+                                </div>
+                                <div class="card-body py-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>生命值:</span>
+                                        <span id="player-a-health" class="fw-bold">1500</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>經濟值:</span>
+                                        <span id="player-a-economy" class="fw-bold">1500</span>
+                                    </div>
+                                    <div class="status-area mt-2">
+                                        <small>狀態：</small>
+                                        <div id="player-a-status" class="mt-1 d-flex flex-wrap gap-1">
+                                            <!-- 狀態會在這裡動態添加 -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="player-b-panel" class="player-panel card shadow">
+                                <div class="card-header py-2">
+                                    <h5 id="player-b-display-name" class="mb-0">玩家 B</h5>
+                                </div>
+                                <div class="card-body py-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>生命值:</span>
+                                        <span id="player-b-health" class="fw-bold">1500</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>經濟值:</span>
+                                        <span id="player-b-economy" class="fw-bold">1500</span>
+                                    </div>
+                                    <div class="status-area mt-2">
+                                        <small>狀態：</small>
+                                        <div id="player-b-status" class="mt-1 d-flex flex-wrap gap-1">
+                                            <!-- 狀態會在這裡動態添加 -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 遊戲控制按鈕 -->
+                            <div class="text-center mt-3">
+                                <button id="end-turn" class="btn btn-primary me-2">結束回合</button>
+                                <button id="reset-game" class="btn btn-outline-danger">重置遊戲</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右側面板：卡牌選擇區域 -->
+                    <div class="col-md-8">
+                        <div class="card shadow h-100">
+                            <div class="card-header py-2">
+                                <h5 class="mb-0">可用卡牌</h5>
+                            </div>
+                            <div class="card-body cards-container">
+                                <div id="card-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                                    <!-- 卡牌將在這裡動態生成 -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 玩家狀態 -->
-            <div class="row mb-4">
-                <div class="col-lg-6 mb-3 mb-lg-0">
-                    <div id="player-a-panel" class="player-panel card shadow active-player">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h3 id="player-a-display-name">玩家 A</h3>
-                            <span class="badge bg-primary fs-6">先手</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h4>生命值:</h4>
-                                        <span id="player-a-health" class="fs-4 fw-bold">1500</span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h4>經濟值:</h4>
-                                        <span id="player-a-economy" class="fs-4 fw-bold">1500</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="status-area mt-3">
-                                <h4>狀態：</h4>
-                                <div id="player-a-status" class="mt-2 d-flex flex-wrap gap-2">
-                                    <!-- 狀態會在這裡動態添加 -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div id="player-b-panel" class="player-panel card shadow">
-                        <div class="card-header">
-                            <h3 id="player-b-display-name">玩家 B</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h4>生命值:</h4>
-                                        <span id="player-b-health" class="fs-4 fw-bold">1500</span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h4>經濟值:</h4>
-                                        <span id="player-b-economy" class="fs-4 fw-bold">1500</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="status-area mt-3">
-                                <h4>狀態：</h4>
-                                <div id="player-b-status" class="mt-2 d-flex flex-wrap gap-2">
-                                    <!-- 狀態會在這裡動態添加 -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 卡牌選擇區域 -->
-            <div class="row mb-4">
+            <!-- 遊戲歷史記錄 (可滾動) -->
+            <div class="row mt-3">
                 <div class="col-12">
                     <div class="card shadow">
-                        <div class="card-header">
-                            <h3>可用卡牌</h3>
+                        <div class="card-header py-2">
+                            <h5 class="mb-0">遊戲歷史</h5>
                         </div>
-                        <div class="card-body">
-                            <div id="card-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                                <!-- 卡牌將在這裡動態生成 -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 遊戲控制按鈕 -->
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <button id="end-turn" class="btn btn-primary btn-lg me-2">結束回合</button>
-                    <button id="reset-game" class="btn btn-outline-danger btn-lg">重置遊戲</button>
-                </div>
-            </div>
-
-            <!-- 遊戲歷史記錄 -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card shadow">
-                        <div class="card-header">
-                            <h3>遊戲歷史</h3>
-                        </div>
-                        <div class="card-body">
-                            <div id="game-history" class="p-3 bg-light rounded"
-                                style="max-height: 200px; overflow-y: auto;">
+                        <div class="card-body p-2">
+                            <div id="game-history" class="p-2 bg-light rounded history-container">
                                 <!-- 歷史記錄將在這裡動態添加 -->
                                 <div class="history-entry">遊戲開始！</div>
                             </div>
