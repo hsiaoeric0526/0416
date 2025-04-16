@@ -6,10 +6,11 @@
 const CardEffects = (() => {
     // 卡牌資料庫
     const cardDatabase = [
+        // 進攻卡系列
         {
             id: 1,
-            name: '火球術',
-            cost: 300,
+            name: '初階進攻卡',
+            cost: 500,
             description: '對對手造成 200 點傷害',
             cardType: 'attack',
             targetType: 'opponent',
@@ -18,156 +19,452 @@ const CardEffects = (() => {
                 const newHealth = Math.max(0, opponentPlayer.health - 200);
                 return {
                     opponentUpdates: { health: newHealth },
-                    message: `${currentPlayer.name} 使用了火球術，對 ${opponentPlayer.name} 造成 200 點傷害`
+                    message: `${currentPlayer.name} 使用了初階進攻卡，對 ${opponentPlayer.name} 造成 200 點傷害`
                 };
             }
         },
         {
             id: 2,
-            name: '治療術',
-            cost: 350,
-            description: '回復 250 點生命值',
-            cardType: 'healing',
-            targetType: 'self',
+            name: '中階進攻卡',
+            cost: 1000,
+            description: '對對手造成 500 點傷害',
+            cardType: 'attack',
+            targetType: 'opponent',
             effect: (currentPlayer, opponentPlayer) => {
-                // 為自己回復生命值
-                const newHealth = currentPlayer.health + 250;
+                // 對對手造成傷害
+                const newHealth = Math.max(0, opponentPlayer.health - 500);
                 return {
-                    playerUpdates: { health: newHealth },
-                    message: `${currentPlayer.name} 使用了治療術，回復了 250 點生命值`
+                    opponentUpdates: { health: newHealth },
+                    message: `${currentPlayer.name} 使用了中階進攻卡，對 ${opponentPlayer.name} 造成 500 點傷害`
                 };
             }
         },
         {
             id: 3,
-            name: '經濟投資',
-            cost: 500,
-            description: '犧牲一回合，下回合獲得 800 經濟值',
-            cardType: 'economy',
-            targetType: 'self',
-            effect: (currentPlayer, opponentPlayer) => {
-                // 添加經濟增益狀態
-                const economyBoost = {
-                    name: '經濟投資',
-                    type: 'economy_boost',
-                    value: 800,
-                    duration: 2, // 下一回合生效
-                    isPositive: true
-                };
-
-                const newStatus = [...currentPlayer.status, economyBoost];
-
-                return {
-                    playerUpdates: { status: newStatus },
-                    message: `${currentPlayer.name} 進行了經濟投資，將在下回合獲得 800 經濟值`
-                };
-            }
-        },
-        {
-            id: 4,
-            name: '毒素攻擊',
-            cost: 400,
-            description: '對對手施加毒素，連續 3 回合每回合造成 100 點傷害',
+            name: '高階進攻卡',
+            cost: 1500,
+            description: '對對手造成 1000 點傷害',
             cardType: 'attack',
             targetType: 'opponent',
             effect: (currentPlayer, opponentPlayer) => {
-                // 添加中毒狀態
-                const poisonEffect = {
-                    name: '中毒',
-                    type: 'damage_over_time',
-                    value: 100,
-                    duration: 3,
-                    isPositive: false
-                };
-
-                const newStatus = [...opponentPlayer.status, poisonEffect];
-
+                // 對對手造成傷害
+                const newHealth = Math.max(0, opponentPlayer.health - 1000);
                 return {
-                    opponentUpdates: { status: newStatus },
-                    message: `${currentPlayer.name} 對 ${opponentPlayer.name} 使用了毒素攻擊，連續 3 回合每回合將造成 100 點傷害`
+                    opponentUpdates: { health: newHealth },
+                    message: `${currentPlayer.name} 使用了高階進攻卡，對 ${opponentPlayer.name} 造成 1000 點傷害`
+                };
+            }
+        },
+
+        // 防守卡系列
+        {
+            id: 4,
+            name: '初階防守卡',
+            cost: 500,
+            description: '回復 120 點生命值',
+            cardType: 'defense',
+            targetType: 'self',
+            effect: (currentPlayer, opponentPlayer) => {
+                // 回復生命值
+                const newHealth = currentPlayer.health + 120;
+                return {
+                    playerUpdates: { health: newHealth },
+                    message: `${currentPlayer.name} 使用了初階防守卡，回復了 120 點生命值`
                 };
             }
         },
         {
             id: 5,
-            name: '經濟破壞',
-            cost: 450,
-            description: '摧毀對手 350 點經濟值',
-            cardType: 'economy',
-            targetType: 'opponent',
+            name: '中階防守卡',
+            cost: 1000,
+            description: '回復 250 點生命值',
+            cardType: 'defense',
+            targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 減少對手經濟值
-                const newEconomy = Math.max(0, opponentPlayer.economy - 350);
-
+                // 回復生命值
+                const newHealth = currentPlayer.health + 250;
                 return {
-                    opponentUpdates: { economy: newEconomy },
-                    message: `${currentPlayer.name} 使用了經濟破壞，摧毀了 ${opponentPlayer.name} 的 350 點經濟值`
+                    playerUpdates: { health: newHealth },
+                    message: `${currentPlayer.name} 使用了中階防守卡，回復了 250 點生命值`
                 };
             }
         },
         {
             id: 6,
-            name: '經濟收割',
-            cost: 200,
-            description: '從對手處獲得 150 點經濟值',
-            cardType: 'economy',
-            targetType: 'both',
+            name: '高階防守卡',
+            cost: 1500,
+            description: '回復 400 點生命值',
+            cardType: 'defense',
+            targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 從對手獲取經濟值
-                const deduction = Math.min(opponentPlayer.economy, 150);
-                const newPlayerEconomy = currentPlayer.economy + deduction;
-                const newOpponentEconomy = opponentPlayer.economy - deduction;
+                // 回復生命值
+                const newHealth = currentPlayer.health + 400;
 
                 return {
-                    playerUpdates: { economy: newPlayerEconomy },
-                    opponentUpdates: { economy: newOpponentEconomy },
-                    message: `${currentPlayer.name} 使用了經濟收割，從 ${opponentPlayer.name} 處獲得了 ${deduction} 點經濟值`
+                    playerUpdates: { health: newHealth, status: newStatus },
+                    message: `${currentPlayer.name} 使用了高階防守卡，回復了 400 點生命值`
                 };
             }
         },
+
+        // 道具卡系列
         {
             id: 7,
-            name: '生命汲取',
-            cost: 600,
-            description: '對對手造成 300 點傷害，並回復自身等量生命值',
-            cardType: 'attack',
-            targetType: 'both',
+            name: '道具卡-睡滿八小時',
+            cost: 0,
+            description: '上班前都有睡飽，身體很健康，回復 500 點生命值',
+            cardType: 'item',
+            targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 計算實際傷害（不能超過對手當前生命值）
-                const damage = Math.min(opponentPlayer.health, 300);
-                const newOpponentHealth = opponentPlayer.health - damage;
-                const newPlayerHealth = currentPlayer.health + damage;
-
+                // 立即回復生命值
+                const newHealth = currentPlayer.health + 500;
                 return {
-                    playerUpdates: { health: newPlayerHealth },
-                    opponentUpdates: { health: newOpponentHealth },
-                    message: `${currentPlayer.name} 使用了生命汲取，對 ${opponentPlayer.name} 造成 ${damage} 點傷害並回復了等量生命值`
+                    playerUpdates: { health: newHealth, status: newStatus },
+                    message: `${currentPlayer.name} 使用了道具卡-睡滿八小時，回復了 500 點生命值`
                 };
             }
         },
         {
             id: 8,
-            name: '護盾術',
-            cost: 400,
-            description: '獲得護盾，抵消接下來 2 回合共 300 點傷害',
-            cardType: 'defense',
+            name: '道具卡-中大獎',
+            cost: 0,
+            description: '下班去彩券行買刮刮樂，運氣超好，立即獲得 1000 點經濟值',
+            cardType: 'item',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 添加護盾狀態
-                const shieldEffect = {
-                    name: '護盾',
-                    type: 'shield',
-                    value: 300, // 護盾值
+                // 增加經濟值
+                const newEconomy = currentPlayer.economy + 1000;
+
+                return {
+                    playerUpdates: { economy: newEconomy },
+                    message: `${currentPlayer.name} 使用了道具卡-中大獎，獲得了 1000 點經濟值`
+                };
+            }
+        },
+        {
+            id: 9,
+            name: '道具卡-重新啟動',
+            cost: 500,
+            description: '有隻貓不小心踩到電源線，導致遊戲需重新啟動，重置雙方所有狀態效果',
+            cardType: 'item',
+            targetType: 'both',
+            effect: (currentPlayer, opponentPlayer) => {
+                // 清除雙方所有狀態
+                return {
+                    playerUpdates: { status: [] },
+                    opponentUpdates: { status: [] },
+                    message: `${currentPlayer.name} 使用了道具卡-重新啟動，重置了雙方所有狀態效果`
+                };
+            }
+        },
+        {
+            id: 10,
+            name: '道具卡-硬體升級',
+            cost: 0,
+            description: '設備更新，讓遊戲可以提前收尾，遊戲結束條件設為「當生命值低於500時」',
+            cardType: 'item',
+            targetType: 'both',
+            effect: (currentPlayer, opponentPlayer) => {
+                // 設置新的結束條件（通過添加一個特殊的遊戲狀態）
+                GameInit.updateGameState({
+                    customVictoryCondition: true,
+                    victoryThreshold: 500
+                });
+
+                return {
+                    message: `${currentPlayer.name} 使用了道具卡-硬體升級，現在當任一方生命值低於500時，遊戲將結束！`
+                };
+            }
+        },
+        {
+            id: 11,
+            name: '道具卡-駭客興起',
+            cost: 0,
+            description: '駭客技術日漸成熟，新攻擊層出不窮，攻擊效果加成30%（持續兩回合）',
+            cardType: 'item',
+            targetType: 'self',
+            effect: (currentPlayer, opponentPlayer) => {
+                // 添加攻擊加成狀態
+                const attackBoostEffect = {
+                    name: '攻擊加成',
+                    type: 'attack_boost',
+                    value: 0.3, // 30% 攻擊加成
                     duration: 2,
                     isPositive: true
                 };
 
-                const newStatus = [...currentPlayer.status, shieldEffect];
+                const newStatus = [...currentPlayer.status, attackBoostEffect];
 
                 return {
                     playerUpdates: { status: newStatus },
-                    message: `${currentPlayer.name} 使用了護盾術，獲得了可抵消 300 點傷害的護盾`
+                    message: `${currentPlayer.name} 使用了道具卡-駭客興起，獲得了30%攻擊加成，持續2回合`
                 };
+            }
+        },
+        {
+            id: 12,
+            name: '道具卡-漏洞彌補',
+            cost: 0,
+            description: '新攻擊一一被擋下，硬軟體設備慢慢的在更新，被攻擊效果減少30%（持續兩回合）',
+            cardType: 'item',
+            targetType: 'self',
+            effect: (currentPlayer, opponentPlayer) => {
+                // 添加防禦加成狀態
+                const defenseBoostEffect = {
+                    name: '減傷效果',
+                    type: 'damage_reduction',
+                    value: 0.3, // 30% 減傷
+                    duration: 2,
+                    isPositive: true
+                };
+
+                const newStatus = [...currentPlayer.status, defenseBoostEffect];
+
+                return {
+                    playerUpdates: { status: newStatus },
+                    message: `${currentPlayer.name} 使用了道具卡-漏洞彌補，獲得了30%傷害減免，持續2回合`
+                };
+            }
+        },
+        {
+            id: 13,
+            name: '隨機事件',
+            cost: 0,
+            description: '觸發一個隨機資安主題事件，可能有正面或負面效果',
+            cardType: 'special',
+            targetType: 'both',
+            effect: (currentPlayer, opponentPlayer) => {
+                // 隨機選擇一個事件
+                const events = [
+                    {
+                        name: '設定密碼',
+                        effect: () => {
+                            // 提示用戶輸入密碼
+                            const password = prompt('請設置一個密碼（將會檢測密碼安全性）:');
+
+                            // 檢查密碼強度
+                            let strength = 0;
+                            let feedback = '';
+
+                            if (!password) {
+                                // 如果用戶取消輸入或未輸入任何內容
+                                return {
+                                    message: `${currentPlayer.name} 放棄了設定密碼`
+                                };
+                            }
+
+                            // 檢查密碼長度
+                            if (password.length >= 8) strength += 1;
+
+                            // 檢查是否包含數字
+                            if (/\d/.test(password)) strength += 1;
+
+                            // 檢查是否包含小寫字母
+                            if (/[a-z]/.test(password)) strength += 1;
+
+                            // 檢查是否包含大寫字母
+                            if (/[A-Z]/.test(password)) strength += 1;
+
+                            // 檢查是否包含特殊字符
+                            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+                            // 根據強度提供反饋
+                            let result = null;
+                            if (strength <= 2) {
+                                // 弱密碼 - 扣生命值
+                                feedback = '您的密碼安全性低，容易被暴力破解！';
+                                result = {
+                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 200) },
+                                    message: `${currentPlayer.name} 設置了弱密碼，受到資安漏洞攻擊，損失 200 點生命值！`
+                                };
+                            } else {
+                                // 強密碼 - 加生命值
+                                feedback = '您的密碼安全性高，恭喜！';
+                                result = {
+                                    playerUpdates: { health: currentPlayer.health + 200 },
+                                    message: `${currentPlayer.name} 設置了強密碼，增強了帳戶安全性，恢復 200 點生命值！`
+                                };
+                            }
+
+                            // 顯示密碼強度反饋
+                            alert(`密碼強度評估：${strength}/5\n${feedback}`);
+
+                            return result;
+                        }
+                    },
+                    {
+                        name: '二步驟驗證',
+                        effect: () => {
+                            // 詢問用戶是否啟用二步驟驗證
+                            const enable2FA = confirm('是否啟用二步驟驗證來保護您的帳戶？');
+
+                            if (enable2FA) {
+                                // 模擬驗證過程
+                                const verificationMethod = prompt('請選擇驗證方式（1: 簡訊驗證碼  2: 電子郵件  3: 認證應用程式）：');
+
+                                // 添加減傷效果
+                                const defenseBoostEffect = {
+                                    name: '二步驟驗證',
+                                    type: 'damage_reduction',
+                                    value: 0.3, // 30% 減傷
+                                    duration: 3,
+                                    isPositive: true
+                                };
+
+                                const newStatus = [...currentPlayer.status, defenseBoostEffect];
+
+                                return {
+                                    playerUpdates: {
+                                        health: currentPlayer.health + 300,
+                                        status: newStatus
+                                    },
+                                    message: `${currentPlayer.name} 啟用了二步驟驗證，增加了 300 點生命值並獲得 30% 的攻擊減免效果，持續 3 回合！`
+                                };
+                            } else {
+                                // 未啟用二步驟驗證的後果
+                                return {
+                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 400) },
+                                    message: `${currentPlayer.name} 選擇不啟用二步驟驗證，帳戶被駭客入侵，損失 400 點生命值！`
+                                };
+                            }
+                        }
+                    },
+                    {
+                        name: '定期備份',
+                        effect: () => {
+                            // 詢問用戶是否設置自動備份
+                            const enableBackup = confirm('是否設置自動備份以保護您的資料？');
+
+                            if (enableBackup) {
+                                // 選擇備份頻率和位置
+                                const backupFrequency = prompt('請選擇備份頻率（1: 每天  2: 每週  3: 每月）：');
+                                const backupLocation = prompt('請選擇備份位置（1: 雲端  2: 本地硬碟）：');
+
+                                // 添加減傷效果
+                                const defenseBoostEffect = {
+                                    name: '資料備份',
+                                    type: 'damage_reduction',
+                                    value: 0.5, // 50% 減傷
+                                    duration: 2,
+                                    isPositive: true
+                                };
+
+                                const newStatus = [...currentPlayer.status, defenseBoostEffect];
+
+                                return {
+                                    playerUpdates: {
+                                        health: currentPlayer.health + 500,
+                                        status: newStatus
+                                    },
+                                    message: `${currentPlayer.name} 設置了定期資料備份，即使遭遇勒索病毒也能迅速恢復，增加 500 點生命值並獲得 50% 的攻擊減免效果，持續 2 回合！`
+                                };
+                            } else {
+                                // 未設置備份的後果
+                                return {
+                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 700) },
+                                    message: `${currentPlayer.name} 未設置備份，遭遇勒索病毒攻擊導致重要資料永久丟失，損失 700 點生命值！`
+                                };
+                            }
+                        }
+                    },
+                    {
+                        name: '使用公用網路的風險',
+                        effect: () => {
+                            // 詢問用戶是否使用不安全的公用網路
+                            const usePublicWifi = confirm('您需要處理重要工作，但只有咖啡店的公共Wi-Fi可用。是否使用？');
+
+                            if (usePublicWifi) {
+                                // 詢問是否使用VPN
+                                const useVPN = confirm('是否使用VPN保護您的連線？');
+
+                                if (useVPN) {
+                                    // 使用VPN的好處
+                                    const defenseBoostEffect = {
+                                        name: 'VPN保護',
+                                        type: 'damage_reduction',
+                                        value: 0.2, // 20% 減傷
+                                        duration: 2,
+                                        isPositive: true
+                                    };
+
+                                    const newStatus = [...currentPlayer.status, defenseBoostEffect];
+
+                                    return {
+                                        playerUpdates: { status: newStatus },
+                                        message: `${currentPlayer.name} 在公共Wi-Fi上使用了VPN保護連線，獲得 20% 的攻擊減免效果，持續 2 回合！`
+                                    };
+                                } else {
+                                    // 使用不安全公共網路的後果
+                                    return {
+                                        playerUpdates: {
+                                            health: Math.max(1, currentPlayer.health - 400),
+                                            economy: Math.max(0, currentPlayer.economy - 200)
+                                        },
+                                        message: `${currentPlayer.name} 在未受保護的公共Wi-Fi上處理敏感資訊，遭遇中間人攻擊，個人資料被竊取，損失 400 點生命值和 200 點經濟值！`
+                                    };
+                                }
+                            } else {
+                                // 避開公用網路的好處
+                                return {
+                                    playerUpdates: { health: currentPlayer.health + 200 },
+                                    message: `${currentPlayer.name} 謹慎地避開了不安全的公共Wi-Fi，保護了個人資料安全，恢復 200 點生命值！`
+                                };
+                            }
+                        }
+                    },
+                    {
+                        name: '定期更新軟體',
+                        effect: () => {
+                            // 詢問用戶是否立即更新系統
+                            const updateNow = confirm('您的系統有重要安全更新，是否立即更新？（如延遲更新可能會有安全風險）');
+
+                            if (updateNow) {
+                                // 立即更新的好處
+                                return {
+                                    playerUpdates: { economy: currentPlayer.economy + 300 },
+                                    message: `${currentPlayer.name} 及時更新了系統，修補了安全漏洞，獲得 300 點經濟值！`
+                                };
+                            } else {
+                                // 延遲更新的後果
+                                return {
+                                    playerUpdates: {
+                                        health: Math.max(1, currentPlayer.health - 500)
+                                    },
+                                    message: `${currentPlayer.name} 延遲更新系統，安全漏洞被駭客利用，遭遇病毒攻擊，損失 500 點生命值！`
+                                };
+                            }
+                        }
+                    }
+                ];
+
+                // 隨機選擇一個事件
+                const randomEvent = events[Math.floor(Math.random() * events.length)];
+
+                // 觸發事件效果
+                const eventResult = randomEvent.effect();
+
+                // 組合最終結果
+                const result = {
+                    message: `${currentPlayer.name} 使用了隨機事件卡，觸發了「${randomEvent.name}」事件！`
+                };
+
+                if (!eventResult) {
+                    return result;
+                }
+
+                if (eventResult.message) {
+                    result.message = eventResult.message;
+                }
+
+                if (eventResult.playerUpdates) {
+                    result.playerUpdates = eventResult.playerUpdates;
+                }
+
+                if (eventResult.opponentUpdates) {
+                    result.opponentUpdates = eventResult.opponentUpdates;
+                }
+
+                return result;
             }
         }
     ];
@@ -254,8 +551,16 @@ const CardEffects = (() => {
         const playerUpdateMethod = currentPlayerKey === 'A' ? GameInit.updatePlayerA : GameInit.updatePlayerB;
         playerUpdateMethod({ economy: newEconomy });
 
-        // 應用卡牌效果
-        const effectResult = card.effect(currentPlayer, opponentPlayer);
+        // 根據卡牌類型處理效果
+        let effectResult;
+
+        if (card.cardType === 'attack') {
+            // 處理攻擊卡牌
+            effectResult = handleAttackCard(card, currentPlayer, opponentPlayer);
+        } else {
+            // 處理其他類型卡牌
+            effectResult = card.effect(currentPlayer, opponentPlayer);
+        }
 
         // 更新玩家狀態
         if (effectResult.playerUpdates) {
@@ -288,6 +593,76 @@ const CardEffects = (() => {
 
         // 檢查勝負條件
         VictoryCondition.checkVictoryCondition();
+    };
+
+    /**
+     * 處理攻擊卡牌，考慮攻擊加成和減傷效果
+     * @param {Object} card - 卡牌對象
+     * @param {Object} currentPlayer - 當前玩家
+     * @param {Object} opponentPlayer - 對手玩家
+     * @returns {Object} 效果結果
+     */
+    const handleAttackCard = (card, currentPlayer, opponentPlayer) => {
+        // 獲取卡牌原始效果
+        const originalEffect = card.effect(currentPlayer, opponentPlayer);
+
+        // 檢查是否有攻擊加成效果
+        const attackBoost = currentPlayer.status.find(status => status.type === 'attack_boost');
+
+        // 檢查是否有減傷效果
+        const damageReduction = opponentPlayer.status.find(status => status.type === 'damage_reduction');
+
+        // 如果沒有修飾效果，直接返回原始效果
+        if (!attackBoost && !damageReduction) {
+            return originalEffect;
+        }
+
+        // 複製原始效果結果
+        const modifiedEffect = { ...originalEffect };
+
+        // 如果有對手生命值更新，應用修飾效果
+        if (modifiedEffect.opponentUpdates && typeof modifiedEffect.opponentUpdates.health !== 'undefined') {
+            // 計算原始傷害
+            const originalDamage = opponentPlayer.health - modifiedEffect.opponentUpdates.health;
+
+            // 計算修飾後的傷害
+            let modifiedDamage = originalDamage;
+
+            // 應用攻擊加成
+            if (attackBoost) {
+                modifiedDamage = Math.floor(modifiedDamage * (1 + attackBoost.value));
+            }
+
+            // 應用減傷效果
+            if (damageReduction) {
+                modifiedDamage = Math.floor(modifiedDamage * (1 - damageReduction.value));
+            }
+
+            // 確保傷害不低於1（除非原始傷害為0）
+            if (originalDamage > 0 && modifiedDamage < 1) {
+                modifiedDamage = 1;
+            }
+
+            // 更新對手生命值
+            const newHealth = Math.max(0, opponentPlayer.health - modifiedDamage);
+            modifiedEffect.opponentUpdates.health = newHealth;
+
+            // 更新消息
+            let effectMessage = modifiedEffect.message;
+
+            // 如果傷害有變化，更新消息
+            if (modifiedDamage !== originalDamage) {
+                // 替換原始傷害數值為修飾後的傷害
+                effectMessage = effectMessage.replace(
+                    new RegExp(`${originalDamage} 點傷害`),
+                    `${modifiedDamage} 點傷害(修飾後)`
+                );
+            }
+
+            modifiedEffect.message = effectMessage;
+        }
+
+        return modifiedEffect;
     };
 
     /**

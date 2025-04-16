@@ -151,6 +151,16 @@ const TurnController = (() => {
                 GameStateTracker.addHistoryEntry(`${player.name} 失去了 ${status.value} 點經濟值（${status.name}）`);
                 break;
 
+            // 攻擊加成和減傷效果不需要每回合應用效果，它們是在卡牌使用時被套用
+            // 但我們仍然需要記錄它們的存在
+            case 'attack_boost':
+                GameStateTracker.addHistoryEntry(`${player.name} 的攻擊加成效果持續中（${status.name}），還剩 ${status.duration} 回合`);
+                break;
+
+            case 'damage_reduction':
+                GameStateTracker.addHistoryEntry(`${player.name} 的減傷效果持續中（${status.name}），還剩 ${status.duration} 回合`);
+                break;
+
             default:
                 break;
         }

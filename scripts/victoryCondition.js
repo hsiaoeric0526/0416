@@ -7,6 +7,7 @@ const VictoryCondition = (() => {
     // 勝負條件類型
     const VICTORY_CONDITIONS = {
         HEALTH_DEPLETED: 'health_depleted', // 生命值歸零
+        HEALTH_BELOW_THRESHOLD: 'health_below_threshold', // 生命值低於閾值
         SURRENDER: 'surrender'              // 投降
     };
 
@@ -24,7 +25,7 @@ const VictoryCondition = (() => {
             return true;
         }
 
-        // 檢查生命值
+        // 檢查生命值是否歸零
         if (playerA.health <= 0) {
             endGame(playerB, playerA, VICTORY_CONDITIONS.HEALTH_DEPLETED);
             return true;
@@ -33,6 +34,20 @@ const VictoryCondition = (() => {
         if (playerB.health <= 0) {
             endGame(playerA, playerB, VICTORY_CONDITIONS.HEALTH_DEPLETED);
             return true;
+        }
+
+        // 檢查自定義勝利條件（硬體升級卡）
+        if (gameState.customVictoryCondition && gameState.victoryThreshold) {
+            // 檢查玩家生命值是否低於閾值
+            if (playerA.health < gameState.victoryThreshold) {
+                endGame(playerB, playerA, VICTORY_CONDITIONS.HEALTH_BELOW_THRESHOLD);
+                return true;
+            }
+
+            if (playerB.health < gameState.victoryThreshold) {
+                endGame(playerA, playerB, VICTORY_CONDITIONS.HEALTH_BELOW_THRESHOLD);
+                return true;
+            }
         }
 
         return false;
@@ -68,6 +83,11 @@ const VictoryCondition = (() => {
         switch (condition) {
             case VICTORY_CONDITIONS.HEALTH_DEPLETED:
                 victoryMessage = `${loser.name} 生命值歸零，${winner.name} 獲勝！`;
+                break;
+
+            case VICTORY_CONDITIONS.HEALTH_BELOW_THRESHOLD:
+                const threshold = GameInit.getGameState().victoryThreshold;
+                victoryMessage = `${loser.name} 生命值低於 ${threshold}，${winner.name} 獲勝！`;
                 break;
 
             case VICTORY_CONDITIONS.SURRENDER:
