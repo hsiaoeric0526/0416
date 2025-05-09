@@ -10,48 +10,45 @@ const CardEffects = (() => {
         {
             id: 1,
             name: '初階進攻卡',
-            cost: 500,
-            description: '對對手造成 200 點傷害',
+            cost: 200,
+            description: '對對手造成 100 點傷害',
             cardType: 'attack',
             targetType: 'opponent',
             effect: (currentPlayer, opponentPlayer) => {
-                // 對對手造成傷害
-                const newHealth = Math.max(0, opponentPlayer.health - 200);
+                const newHealth = Math.max(0, opponentPlayer.health - 100);
                 return {
                     opponentUpdates: { health: newHealth },
-                    message: `${currentPlayer.name} 使用了初階進攻卡，對 ${opponentPlayer.name} 造成 200 點傷害`
+                    message: `${currentPlayer.name} 使用了初階進攻卡，對 ${opponentPlayer.name} 造成 100 點傷害`
                 };
             }
         },
         {
             id: 2,
             name: '中階進攻卡',
-            cost: 1000,
-            description: '對對手造成 500 點傷害',
+            cost: 500,
+            description: '對對手造成 300 點傷害',
             cardType: 'attack',
             targetType: 'opponent',
             effect: (currentPlayer, opponentPlayer) => {
-                // 對對手造成傷害
-                const newHealth = Math.max(0, opponentPlayer.health - 500);
+                const newHealth = Math.max(0, opponentPlayer.health - 300);
                 return {
                     opponentUpdates: { health: newHealth },
-                    message: `${currentPlayer.name} 使用了中階進攻卡，對 ${opponentPlayer.name} 造成 500 點傷害`
+                    message: `${currentPlayer.name} 使用了中階進攻卡，對 ${opponentPlayer.name} 造成 300 點傷害`
                 };
             }
         },
         {
             id: 3,
             name: '高階進攻卡',
-            cost: 1500,
-            description: '對對手造成 1000 點傷害',
+            cost: 1000,
+            description: '對對手造成 700 點傷害',
             cardType: 'attack',
             targetType: 'opponent',
             effect: (currentPlayer, opponentPlayer) => {
-                // 對對手造成傷害
-                const newHealth = Math.max(0, opponentPlayer.health - 1000);
+                const newHealth = Math.max(0, opponentPlayer.health - 700);
                 return {
                     opponentUpdates: { health: newHealth },
-                    message: `${currentPlayer.name} 使用了高階進攻卡，對 ${opponentPlayer.name} 造成 1000 點傷害`
+                    message: `${currentPlayer.name} 使用了高階進攻卡，對 ${opponentPlayer.name} 造成 700 點傷害`
                 };
             }
         },
@@ -60,49 +57,45 @@ const CardEffects = (() => {
         {
             id: 4,
             name: '初階防守卡',
-            cost: 500,
-            description: '回復 120 點生命值',
+            cost: 200,
+            description: '回復 100 點生命值',
             cardType: 'defense',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 回復生命值
-                const newHealth = currentPlayer.health + 120;
+                const newHealth = currentPlayer.health + 100;
                 return {
                     playerUpdates: { health: newHealth },
-                    message: `${currentPlayer.name} 使用了初階防守卡，回復了 120 點生命值`
+                    message: `${currentPlayer.name} 使用了初階防守卡，回復了 100 點生命值`
                 };
             }
         },
         {
             id: 5,
             name: '中階防守卡',
-            cost: 1000,
-            description: '回復 250 點生命值',
+            cost: 500,
+            description: '回復 300 點生命值',
             cardType: 'defense',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 回復生命值
-                const newHealth = currentPlayer.health + 250;
+                const newHealth = currentPlayer.health + 300;
                 return {
                     playerUpdates: { health: newHealth },
-                    message: `${currentPlayer.name} 使用了中階防守卡，回復了 250 點生命值`
+                    message: `${currentPlayer.name} 使用了中階防守卡，回復了 300 點生命值`
                 };
             }
         },
         {
             id: 6,
             name: '高階防守卡',
-            cost: 1500,
-            description: '回復 400 點生命值',
+            cost: 1000,
+            description: '回復 700 點生命值',
             cardType: 'defense',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 回復生命值
-                const newHealth = currentPlayer.health + 400;
-
+                const newHealth = currentPlayer.health + 700;
                 return {
-                    playerUpdates: { health: newHealth, status: newStatus },
-                    message: `${currentPlayer.name} 使用了高階防守卡，回復了 400 點生命值`
+                    playerUpdates: { health: newHealth },
+                    message: `${currentPlayer.name} 使用了高階防守卡，回復了 700 點生命值`
                 };
             }
         },
@@ -116,10 +109,9 @@ const CardEffects = (() => {
             cardType: 'item',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 立即回復生命值
                 const newHealth = currentPlayer.health + 500;
                 return {
-                    playerUpdates: { health: newHealth, status: newStatus },
+                    playerUpdates: { health: newHealth },
                     message: `${currentPlayer.name} 使用了道具卡-睡滿八小時，回復了 500 點生命值`
                 };
             }
@@ -132,9 +124,7 @@ const CardEffects = (() => {
             cardType: 'item',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 增加經濟值
                 const newEconomy = currentPlayer.economy + 1000;
-
                 return {
                     playerUpdates: { economy: newEconomy },
                     message: `${currentPlayer.name} 使用了道具卡-中大獎，獲得了 1000 點經濟值`
@@ -144,12 +134,11 @@ const CardEffects = (() => {
         {
             id: 9,
             name: '道具卡-重新啟動',
-            cost: 500,
+            cost: 0,
             description: '有隻貓不小心踩到電源線，導致遊戲需重新啟動，重置雙方所有狀態效果',
             cardType: 'item',
             targetType: 'both',
             effect: (currentPlayer, opponentPlayer) => {
-                // 清除雙方所有狀態
                 return {
                     playerUpdates: { status: [] },
                     opponentUpdates: { status: [] },
@@ -165,12 +154,10 @@ const CardEffects = (() => {
             cardType: 'item',
             targetType: 'both',
             effect: (currentPlayer, opponentPlayer) => {
-                // 設置新的結束條件（通過添加一個特殊的遊戲狀態）
                 GameInit.updateGameState({
                     customVictoryCondition: true,
                     victoryThreshold: 500
                 });
-
                 return {
                     message: `${currentPlayer.name} 使用了道具卡-硬體升級，現在當任一方生命值低於500時，遊戲將結束！`
                 };
@@ -180,24 +167,22 @@ const CardEffects = (() => {
             id: 11,
             name: '道具卡-駭客興起',
             cost: 0,
-            description: '駭客技術日漸成熟，新攻擊層出不窮，攻擊效果加成30%（持續兩回合）',
+            description: '駭客技術日漸成熟，新攻擊層出不窮，經濟值抵銷300（持續兩回合）',
             cardType: 'item',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 添加攻擊加成狀態
-                const attackBoostEffect = {
-                    name: '攻擊加成',
-                    type: 'attack_boost',
-                    value: 0.3, // 30% 攻擊加成
+                // 特殊邏輯：兩回合內每次受到攻擊時，先抵銷300經濟值
+                const hackerRiseEffect = {
+                    name: '駭客興起',
+                    type: 'economy_shield',
+                    value: 300,
                     duration: 2,
                     isPositive: true
                 };
-
-                const newStatus = [...currentPlayer.status, attackBoostEffect];
-
+                const newStatus = [...currentPlayer.status, hackerRiseEffect];
                 return {
                     playerUpdates: { status: newStatus },
-                    message: `${currentPlayer.name} 使用了道具卡-駭客興起，獲得了30%攻擊加成，持續2回合`
+                    message: `${currentPlayer.name} 使用了道具卡-駭客興起，兩回合內每次受到攻擊時，先抵銷300經濟值`
                 };
             }
         },
@@ -205,24 +190,22 @@ const CardEffects = (() => {
             id: 12,
             name: '道具卡-漏洞彌補',
             cost: 0,
-            description: '新攻擊一一被擋下，硬軟體設備慢慢的在更新，被攻擊效果減少30%（持續兩回合）',
+            description: '新攻擊一一被擋下，硬軟體設備慢慢的在更新，生命值抵銷200（持續兩回合）',
             cardType: 'item',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 添加防禦加成狀態
-                const defenseBoostEffect = {
-                    name: '減傷效果',
-                    type: 'damage_reduction',
-                    value: 0.3, // 30% 減傷
+                // 特殊邏輯：兩回合內每次受到攻擊時，先抵銷200生命值
+                const patchEffect = {
+                    name: '漏洞彌補',
+                    type: 'health_shield',
+                    value: 200,
                     duration: 2,
                     isPositive: true
                 };
-
-                const newStatus = [...currentPlayer.status, defenseBoostEffect];
-
+                const newStatus = [...currentPlayer.status, patchEffect];
                 return {
                     playerUpdates: { status: newStatus },
-                    message: `${currentPlayer.name} 使用了道具卡-漏洞彌補，獲得了30%傷害減免，持續2回合`
+                    message: `${currentPlayer.name} 使用了道具卡-漏洞彌補，兩回合內每次受到攻擊時，先抵銷200生命值`
                 };
             }
         },
@@ -596,7 +579,7 @@ const CardEffects = (() => {
     };
 
     /**
-     * 處理攻擊卡牌，考慮攻擊加成和減傷效果
+     * 處理攻擊卡牌，考慮攻擊加成和減傷效果，以及經濟/生命抵銷盾
      * @param {Object} card - 卡牌對象
      * @param {Object} currentPlayer - 當前玩家
      * @param {Object} opponentPlayer - 對手玩家
@@ -606,62 +589,68 @@ const CardEffects = (() => {
         // 獲取卡牌原始效果
         const originalEffect = card.effect(currentPlayer, opponentPlayer);
 
-        // 檢查是否有攻擊加成效果
+        // 取得盾狀態
+        const economyShield = opponentPlayer.status.find(status => status.type === 'economy_shield');
+        const healthShield = opponentPlayer.status.find(status => status.type === 'health_shield');
         const attackBoost = currentPlayer.status.find(status => status.type === 'attack_boost');
-
-        // 檢查是否有減傷效果
         const damageReduction = opponentPlayer.status.find(status => status.type === 'damage_reduction');
 
-        // 如果沒有修飾效果，直接返回原始效果
-        if (!attackBoost && !damageReduction) {
+        // 如果沒有盾與修飾效果，直接返回原始效果
+        if (!economyShield && !healthShield && !attackBoost && !damageReduction) {
             return originalEffect;
         }
 
         // 複製原始效果結果
         const modifiedEffect = { ...originalEffect };
 
-        // 如果有對手生命值更新，應用修飾效果
+        // 如果有對手生命值更新，應用盾與修飾效果
         if (modifiedEffect.opponentUpdates && typeof modifiedEffect.opponentUpdates.health !== 'undefined') {
             // 計算原始傷害
-            const originalDamage = opponentPlayer.health - modifiedEffect.opponentUpdates.health;
+            let damage = opponentPlayer.health - modifiedEffect.opponentUpdates.health;
+            let shieldMsg = '';
+            let newEconomy = opponentPlayer.economy;
+            let newHealth = opponentPlayer.health;
 
-            // 計算修飾後的傷害
-            let modifiedDamage = originalDamage;
-
-            // 應用攻擊加成
+            // 攻擊加成
             if (attackBoost) {
-                modifiedDamage = Math.floor(modifiedDamage * (1 + attackBoost.value));
+                damage = Math.floor(damage * (1 + attackBoost.value));
             }
-
-            // 應用減傷效果
+            // 減傷效果
             if (damageReduction) {
-                modifiedDamage = Math.floor(modifiedDamage * (1 - damageReduction.value));
+                damage = Math.floor(damage * (1 - damageReduction.value));
             }
 
-            // 確保傷害不低於1（除非原始傷害為0）
-            if (originalDamage > 0 && modifiedDamage < 1) {
-                modifiedDamage = 1;
+            // 先抵銷經濟值
+            if (economyShield && damage > 0) {
+                const shieldValue = economyShield.value;
+                const usedEconomy = Math.min(shieldValue, damage, newEconomy);
+                if (usedEconomy > 0) {
+                    newEconomy -= usedEconomy;
+                    damage -= usedEconomy;
+                    shieldMsg += `（駭客興起：經濟值抵銷${usedEconomy}）`;
+                }
             }
-
-            // 更新對手生命值
-            const newHealth = Math.max(0, opponentPlayer.health - modifiedDamage);
+            // 再抵銷生命值
+            if (healthShield && damage > 0) {
+                const shieldValue = healthShield.value;
+                const usedHealth = Math.min(shieldValue, damage);
+                if (usedHealth > 0) {
+                    damage -= usedHealth;
+                    shieldMsg += `（漏洞彌補：生命值抵銷${usedHealth}）`;
+                }
+            }
+            // 最終傷害
+            if (damage < 0) damage = 0;
+            newHealth = Math.max(0, newHealth - damage);
             modifiedEffect.opponentUpdates.health = newHealth;
-
-            // 更新消息
-            let effectMessage = modifiedEffect.message;
-
-            // 如果傷害有變化，更新消息
-            if (modifiedDamage !== originalDamage) {
-                // 替換原始傷害數值為修飾後的傷害
-                effectMessage = effectMessage.replace(
-                    new RegExp(`${originalDamage} 點傷害`),
-                    `${modifiedDamage} 點傷害(修飾後)`
-                );
+            if (typeof modifiedEffect.opponentUpdates.economy === 'undefined' && newEconomy !== opponentPlayer.economy) {
+                modifiedEffect.opponentUpdates.economy = newEconomy;
             }
-
+            // 更新訊息
+            let effectMessage = modifiedEffect.message;
+            effectMessage += shieldMsg;
             modifiedEffect.message = effectMessage;
         }
-
         return modifiedEffect;
     };
 
