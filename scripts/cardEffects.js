@@ -243,16 +243,16 @@ const CardEffects = (() => {
                             if (strength >= 4) {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 200 },
-                                    message: `${currentPlayer.name} 設置了高強度密碼！具備多重防護，有效防範各類密碼破解攻擊。`
+                                    message: `${currentPlayer.name} 設置了高強度密碼！具備多重防護，有效防範各類密碼破解攻擊。\n【效果：生命值 +200】`
                                 };
                             } else if (strength === 3) {
                                 return {
-                                    message: `${currentPlayer.name} 設置的密碼安全性尚可接受，但建議可再增加複雜度。`
+                                    message: `${currentPlayer.name} 設置的密碼安全性尚可接受，但建議可再增加複雜度。\n【效果：無】`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { health: Math.max(1, currentPlayer.health - 200) },
-                                    message: `警告！${currentPlayer.name} 設置的密碼容易遭到破解，建議立即重新設置更強的密碼。`
+                                    message: `警告！${currentPlayer.name} 設置的密碼容易遭到破解，建議立即重新設置更強的密碼。\n【效果：生命值 -200】`
                                 };
                             }
                         }
@@ -272,17 +272,17 @@ C. 暫時封鎖帳號，等上班時再處理`,
                             if (level === '強') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 500 },
-                                    message: `${currentPlayer.name} 成功阻止未授權登入！多重驗證提供了最佳防護。`
+                                    message: `${currentPlayer.name} 成功阻止未授權登入！多重驗證提供了最佳防護。\n【效果：經濟值 +500】`
                                 };
                             } else if (level === '中') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 100 },
-                                    message: `${currentPlayer.name} 啟用了基本的驗證機制，但建議使用更安全的驗證方式。`
+                                    message: `${currentPlayer.name} 啟用了基本的驗證機制，但建議使用更安全的驗證方式。\n【效果：經濟值 +100】`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { economy: Math.max(0, currentPlayer.economy - 500) },
-                                    message: `${currentPlayer.name} 的帳號暫時安全，但可能影響工作，且未解決根本問題。`
+                                    message: `${currentPlayer.name} 的帳號暫時安全，但可能影響工作，且未解決根本問題。\n【效果：經濟值 -500】`
                                 };
                             }
                         }
@@ -301,17 +301,17 @@ C. 僅在本地端進行備份`,
                             if (level === '強') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 300 },
-                                    message: `${currentPlayer.name} 的完整備份策略確保資料安全，即使遭受攻擊也能快速復原。`
+                                    message: `${currentPlayer.name} 的完整備份策略確保資料安全，即使遭受攻擊也能快速復原。\n【效果：生命值 +300】`
                                 };
                             } else if (level === '中') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 200 },
-                                    message: `${currentPlayer.name} 建立了基本的備份機制，但復原時間可能較長。`
+                                    message: `${currentPlayer.name} 建立了基本的備份機制，但復原時間可能較長。\n【效果：生命值 +200】`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { health: Math.max(1, currentPlayer.health - 100) },
-                                    message: `${currentPlayer.name} 的本地備份有風險，若遭受攻擊可能導致資料完全遺失。`
+                                    message: `${currentPlayer.name} 的本地備份有風險，若遭受攻擊可能導致資料完全遺失。\n【效果：生命值 -100】`
                                 };
                             }
                         }
@@ -330,17 +330,17 @@ C. 直接使用咖啡廳 WiFi`,
                             if (level === '強') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 500 },
-                                    message: `${currentPlayer.name} 採用最高安全標準，確保機密資料傳輸安全。`
+                                    message: `${currentPlayer.name} 採用最高安全標準，確保機密資料傳輸安全。\n【效果：生命值 +500】`
                                 };
                             } else if (level === '中') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 100 },
-                                    message: `${currentPlayer.name} 啟用了基本安全防護，但公用 WiFi 仍有潛在風險。`
+                                    message: `${currentPlayer.name} 啟用了基本安全防護，但公用 WiFi 仍有潛在風險。\n【效果：生命值 +100】`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { health: Math.max(1, currentPlayer.health - 500) },
-                                    message: `警告！${currentPlayer.name} 在未加密的網路環境可能導致資料外洩！`
+                                    message: `警告！${currentPlayer.name} 在未加密的網路環境可能導致資料外洩！\n【效果：生命值 -500】`
                                 };
                             }
                         }
@@ -360,16 +360,16 @@ C. 關閉更新提醒，等報表完成再處理`,
                             if (level === '強') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 200 },
-                                    message: `${currentPlayer.name} 即時更新成功防禦了可能的攻擊，保護了公司系統。`
+                                    message: `${currentPlayer.name} 即時更新成功防禦了可能的攻擊，保護了公司系統。\n【效果：經濟值 +200】`
                                 };
                             } else if (level === '中') {
                                 return {
-                                    message: `${currentPlayer.name} 的系統最終得到更新，但存在短暫的風險期。`
+                                    message: `${currentPlayer.name} 的系統最終得到更新，但存在短暫的風險期。\n【效果：無】`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { economy: Math.max(0, currentPlayer.economy - 100) },
-                                    message: `警告！${currentPlayer.name} 延遲更新導致系統暴露在高風險狀態！`
+                                    message: `警告！${currentPlayer.name} 延遲更新導致系統暴露在高風險狀態！\n【效果：經濟值 -100】`
                                 };
                             }
                         }
