@@ -385,10 +385,14 @@ C. 關閉更新提醒，等報表完成再處理`,
                     document.getElementById('event-result').textContent = '';
                     const interactDiv = document.getElementById('event-interact');
                     interactDiv.innerHTML = '';
+                    modal.show();
                     // 密碼事件：文字輸入框
                     if (randomEvent.type === 'password') {
-                        interactDiv.innerHTML = `<input type="text" class="form-control mb-2" id="event-password-input" placeholder="請輸入密碼">` +
-                            `<button class="btn btn-primary w-100" id="event-password-btn">確認</button>`;
+                        interactDiv.innerHTML = `
+                            <div class="mb-3">
+                                <input type="text" class="form-control mb-2" id="event-password-input" placeholder="請輸入密碼">
+                                <button class="btn btn-primary w-100" id="event-password-btn">確認</button>
+                            </div>`;
                         document.getElementById('event-password-btn').onclick = () => {
                             const val = document.getElementById('event-password-input').value;
                             const result = randomEvent.handler(val);
@@ -400,24 +404,52 @@ C. 關閉更新提醒，等報表完成再處理`,
                             }, 1200);
                         };
                     } else {
-                        // 其餘事件：三個分級按鈕
-                        ['強', '中', '弱'].forEach(level => {
-                            const btn = document.createElement('button');
-                            btn.className = `btn btn-outline-primary m-1`;
-                            btn.textContent = level;
-                            btn.onclick = () => {
-                                const result = randomEvent.handler(level);
-                                document.getElementById('event-result').textContent = result.message;
-                                setTimeout(() => {
-                                    modal.hide();
-                                    GameStateTracker.updatePlayerStats();
-                                    resolve(result);
-                                }, 1200);
-                            };
-                            interactDiv.appendChild(btn);
+                        // 其他事件：選項按鈕
+                        interactDiv.innerHTML = '<div class="d-grid gap-2">';
+                        const options = {
+                            '異常登入警報': [
+                                '啟用 Google Authenticator 驗證，並立即變更密碼',
+                                '開啟 SMS 簡訊驗證，保持密碼不變',
+                                '暫時封鎖帳號，等上班時再處理'
+                            ],
+                            '檔案勒索警報': [
+                                '建立異地加密備份 + 即時同步 + 定期備份測試',
+                                '雲端備份 + 每週本地備份',
+                                '僅在本地端進行備份'
+                            ],
+                            '遠端工作緊急會議': [
+                                '使用行動網路 + VPN + 加密連線',
+                                '使用咖啡廳 WiFi + VPN',
+                                '直接使用咖啡廳 WiFi'
+                            ],
+                            '零時差漏洞預警': [
+                                '立即儲存工作並更新，主動通知團隊成員',
+                                '設定在一小時後自動更新，先完成手上工作',
+                                '關閉更新提醒，等報表完成再處理'
+                            ]
+                        };
+
+                        const eventOptions = options[randomEvent.name] || ['強', '中', '弱'];
+                        const levels = ['強', '中', '弱'];
+
+                        eventOptions.forEach((option, index) => {
+                            const buttonClass = index === 0 ? 'btn-success' :
+                                index === 1 ? 'btn-warning' :
+                                    'btn-danger';
+                            interactDiv.innerHTML += `
+                                <button class="btn ${buttonClass} mb-2" onclick="(function(){
+                                    const result = ${randomEvent.name.replace(/[^a-zA-Z]/g, '_')}_handler('${levels[index]}');
+                                    document.getElementById('event-result').textContent = result.message;
+                                    setTimeout(() => { 
+                                        bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
+                                        resolve(result);
+                                    }, 1200);
+                                })()">
+                                    ${option}
+                                </button>`;
                         });
+                        interactDiv.innerHTML += '</div>';
                     }
-                    modal.show();
                 });
             }
         }
