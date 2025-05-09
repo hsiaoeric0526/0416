@@ -491,7 +491,7 @@ const CardEffects = (() => {
         }
 
         // 重新渲染卡牌（經濟值已經變化）
-        renderCards(currentPlayerKey === 'A' ? GameInit.getPlayerA() : GameInit.getPlayerB());
+        // renderCards(currentPlayerKey === 'A' ? GameInit.getPlayerA() : GameInit.getPlayerB());
 
         // 檢查勝負條件
         VictoryCondition.checkVictoryCondition();
