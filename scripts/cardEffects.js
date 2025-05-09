@@ -358,7 +358,11 @@ const CardEffects = (() => {
                             const val = document.getElementById('event-password-input').value;
                             const result = randomEvent.handler(val);
                             document.getElementById('event-result').textContent = result.message;
-                            setTimeout(() => { modal.hide(); resolve(result); }, 1200);
+                            setTimeout(() => {
+                                modal.hide();
+                                GameStateTracker.updatePlayerStats();
+                                resolve(result);
+                            }, 1200);
                         };
                     } else {
                         // 其餘事件：三個分級按鈕
@@ -369,7 +373,11 @@ const CardEffects = (() => {
                             btn.onclick = () => {
                                 const result = randomEvent.handler(level);
                                 document.getElementById('event-result').textContent = result.message;
-                                setTimeout(() => { modal.hide(); resolve(result); }, 1200);
+                                setTimeout(() => {
+                                    modal.hide();
+                                    GameStateTracker.updatePlayerStats();
+                                    resolve(result);
+                                }, 1200);
                             };
                             interactDiv.appendChild(btn);
                         });
@@ -449,7 +457,7 @@ const CardEffects = (() => {
      * 使用卡牌
      * @param {Object} card - 卡牌對象
      */
-    const playCard = (card) => {
+    const playCard = async (card) => {
         const gameState = GameInit.getGameState();
 
         // 如果遊戲已結束，不允許使用卡牌
@@ -480,8 +488,8 @@ const CardEffects = (() => {
             // 處理攻擊卡牌
             effectResult = handleAttackCard(card, currentPlayer, opponentPlayer);
         } else {
-            // 處理其他類型卡牌
-            effectResult = card.effect(currentPlayer, opponentPlayer);
+            // 處理其他類型卡牌，支援 Promise
+            effectResult = await card.effect(currentPlayer, opponentPlayer);
         }
 
         // 更新玩家狀態
@@ -510,11 +518,7 @@ const CardEffects = (() => {
             TurnController.updateTurnUI();
         }
 
-        // 重新渲染卡牌（經濟值已經變化）
-        // renderCards(currentPlayerKey === 'A' ? GameInit.getPlayerA() : GameInit.getPlayerB());
-
-        // 檢查勝負條件
-        VictoryCondition.checkVictoryCondition();
+        return effectResult;
     };
 
     /**
