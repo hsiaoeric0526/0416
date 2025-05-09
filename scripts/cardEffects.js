@@ -431,23 +431,50 @@ C. 關閉更新提醒，等報表完成再處理`,
 
                         const eventOptions = options[randomEvent.name] || ['強', '中', '弱'];
                         const levels = ['強', '中', '弱'];
+                        const buttonsContainer = document.createElement('div');
+                        buttonsContainer.className = 'd-grid gap-2';
 
                         eventOptions.forEach((option, index) => {
                             const button = document.createElement('button');
                             button.className = 'btn btn-outline-primary mb-2 w-100';
                             button.textContent = option;
-                            button.onclick = async () => {
+                            button.type = 'button';
+
+                            const handleClick = () => {
                                 const result = randomEvent.handler(levels[index]);
-                                document.getElementById('event-result').textContent = result.message;
+                                const resultElement = document.getElementById('event-result');
+                                if (resultElement) {
+                                    resultElement.textContent = result.message;
+                                }
+
+                                // 更新遊戲狀態
+                                if (result.playerUpdates) {
+                                    const currentPlayerKey = GameInit.getGameState().currentPlayer;
+                                    const updateMethod = currentPlayerKey === 'A' ?
+                                        GameInit.updatePlayerA : GameInit.updatePlayerB;
+                                    updateMethod(result.playerUpdates);
+                                }
+
+                                // 延遲關閉 Modal
                                 setTimeout(() => {
-                                    bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
+                                    const modalElement = document.getElementById('eventModal');
+                                    if (modalElement) {
+                                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                                        if (modalInstance) {
+                                            modalInstance.hide();
+                                        }
+                                    }
                                     GameStateTracker.updatePlayerStats();
                                     resolve(result);
                                 }, 1200);
                             };
-                            interactDiv.appendChild(button);
+
+                            button.addEventListener('click', handleClick);
+                            buttonsContainer.appendChild(button);
                         });
-                        interactDiv.innerHTML += '</div>';
+
+                        interactDiv.innerHTML = ''; // 清空現有內容
+                        interactDiv.appendChild(buttonsContainer);
                     }
                 });
             }
