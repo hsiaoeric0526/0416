@@ -171,7 +171,6 @@ const CardEffects = (() => {
             cardType: 'item',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 特殊邏輯：兩回合內每次受到攻擊時，先抵銷300經濟值
                 const hackerRiseEffect = {
                     name: '駭客興起',
                     type: 'economy_shield',
@@ -180,6 +179,7 @@ const CardEffects = (() => {
                     isPositive: true
                 };
                 const newStatus = [...currentPlayer.status, hackerRiseEffect];
+                setTimeout(() => { TurnController.updateTurnUI(); }, 0);
                 return {
                     playerUpdates: { status: newStatus },
                     message: `${currentPlayer.name} 使用了道具卡-駭客興起，兩回合內每次受到攻擊時，先抵銷300經濟值`
@@ -194,7 +194,6 @@ const CardEffects = (() => {
             cardType: 'item',
             targetType: 'self',
             effect: (currentPlayer, opponentPlayer) => {
-                // 特殊邏輯：兩回合內每次受到攻擊時，先抵銷200生命值
                 const patchEffect = {
                     name: '漏洞彌補',
                     type: 'health_shield',
@@ -203,6 +202,7 @@ const CardEffects = (() => {
                     isPositive: true
                 };
                 const newStatus = [...currentPlayer.status, patchEffect];
+                setTimeout(() => { TurnController.updateTurnUI(); }, 0);
                 return {
                     playerUpdates: { status: newStatus },
                     message: `${currentPlayer.name} 使用了道具卡-漏洞彌補，兩回合內每次受到攻擊時，先抵銷200生命值`
