@@ -220,12 +220,21 @@ const CardEffects = (() => {
                 // 定義事件資料
                 const events = [
                     {
-                        name: '密碼強度檢測遊戲',
-                        desc: '請輸入一組密碼，系統將檢測其強度。',
+                        name: '系統安全升級',
+                        desc: `公司的資訊系統即將進行安全性升級，
+系統要求你更新個人帳號的密碼。
+近期有許多公司遭受密碼破解攻擊，
+請謹慎設置你的新密碼。
+
+提示：
+- 此密碼將用於存取所有公司系統
+- 密碼不建議包含個人資訊（如生日、名字）
+- 請避免使用曾經用過的密碼
+- 建議使用密碼管理工具協助記憶`,
                         type: 'password',
                         handler: (input) => {
                             let strength = 0;
-                            if (!input) return { message: `${currentPlayer.name} 放棄了設定密碼` };
+                            if (!input) return { message: `${currentPlayer.name} 放棄了設置密碼` };
                             if (input.length >= 8) strength += 1;
                             if (/\d/.test(input)) strength += 1;
                             if (/[a-z]/.test(input)) strength += 1;
@@ -234,107 +243,133 @@ const CardEffects = (() => {
                             if (strength >= 4) {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 200 },
-                                    message: `${currentPlayer.name} 設置了強密碼，生命值加200！`
+                                    message: `${currentPlayer.name} 設置了高強度密碼！具備多重防護，有效防範各類密碼破解攻擊。`
                                 };
                             } else if (strength === 3) {
                                 return {
-                                    message: `${currentPlayer.name} 設置了中等密碼，生命值不變。`
+                                    message: `${currentPlayer.name} 設置的密碼安全性尚可接受，但建議可再增加複雜度。`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { health: Math.max(1, currentPlayer.health - 200) },
-                                    message: `${currentPlayer.name} 設置了弱密碼，生命值扣200！`
+                                    message: `警告！${currentPlayer.name} 設置的密碼容易遭到破解，建議立即重新設置更強的密碼。`
                                 };
                             }
                         }
                     },
                     {
-                        name: '二步驟驗證',
-                        desc: '請選擇你目前的二步驟驗證強度。',
+                        name: '異常登入警報',
+                        desc: `你收到公司系統的異常登入警報通知，
+顯示有人在非常規時間、從未知位置
+嘗試登入你的帳號。
+請選擇處理方式：
+
+A. 啟用 Google Authenticator 驗證，並立即變更密碼
+B. 開啟 SMS 簡訊驗證，保持密碼不變
+C. 暫時封鎖帳號，等上班時再處理`,
                         type: 'level',
                         handler: (level) => {
                             if (level === '強') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 500 },
-                                    message: `${currentPlayer.name} 二步驟驗證強，經濟值加500！`
+                                    message: `${currentPlayer.name} 成功阻止未授權登入！多重驗證提供了最佳防護。`
                                 };
                             } else if (level === '中') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 100 },
-                                    message: `${currentPlayer.name} 二步驟驗證中，經濟值加100！`
+                                    message: `${currentPlayer.name} 啟用了基本的驗證機制，但建議使用更安全的驗證方式。`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { economy: Math.max(0, currentPlayer.economy - 500) },
-                                    message: `${currentPlayer.name} 二步驟驗證弱，經濟值扣500！`
+                                    message: `${currentPlayer.name} 的帳號暫時安全，但可能影響工作，且未解決根本問題。`
                                 };
                             }
                         }
                     },
                     {
-                        name: '備份設置決策',
-                        desc: '請選擇你的備份設置強度。',
+                        name: '檔案勒索警報',
+                        desc: `公司收到資安警報，某合作企業遭受勒索軟體攻擊，
+所有檔案被加密，要求支付贖金。
+你負責的專案檔案該如何確保安全？
+
+A. 建立異地加密備份 + 即時同步 + 定期備份測試
+B. 雲端備份 + 每週本地備份
+C. 僅在本地端進行備份`,
                         type: 'level',
                         handler: (level) => {
                             if (level === '強') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 300 },
-                                    message: `${currentPlayer.name} 備份設置強，生命值加300！`
+                                    message: `${currentPlayer.name} 的完整備份策略確保資料安全，即使遭受攻擊也能快速復原。`
                                 };
                             } else if (level === '中') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 200 },
-                                    message: `${currentPlayer.name} 備份設置中，生命值加200！`
+                                    message: `${currentPlayer.name} 建立了基本的備份機制，但復原時間可能較長。`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { health: Math.max(1, currentPlayer.health - 100) },
-                                    message: `${currentPlayer.name} 備份設置弱，生命值扣100！`
+                                    message: `${currentPlayer.name} 的本地備份有風險，若遭受攻擊可能導致資料完全遺失。`
                                 };
                             }
                         }
                     },
                     {
-                        name: '選擇安全的網路環境',
-                        desc: '請選擇你選擇的網路環境安全性。',
+                        name: '遠端工作緊急會議',
+                        desc: `在咖啡廳工作時，主管緊急召開線上會議，
+需要存取公司機密文件進行簡報。
+你會選擇什麼方式連線？
+
+A. 使用行動網路 + VPN + 加密連線
+B. 使用咖啡廳 WiFi + VPN
+C. 直接使用咖啡廳 WiFi`,
                         type: 'level',
                         handler: (level) => {
                             if (level === '強') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 500 },
-                                    message: `${currentPlayer.name} 網路環境安全強，生命值加500！`
+                                    message: `${currentPlayer.name} 採用最高安全標準，確保機密資料傳輸安全。`
                                 };
                             } else if (level === '中') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 100 },
-                                    message: `${currentPlayer.name} 網路環境安全中，生命值加100！`
+                                    message: `${currentPlayer.name} 啟用了基本安全防護，但公用 WiFi 仍有潛在風險。`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { health: Math.max(1, currentPlayer.health - 500) },
-                                    message: `${currentPlayer.name} 網路環境安全弱，生命值扣500！`
+                                    message: `警告！${currentPlayer.name} 在未加密的網路環境可能導致資料外洩！`
                                 };
                             }
                         }
                     },
                     {
-                        name: '軟體更新決策',
-                        desc: '請選擇你的軟體更新策略。',
+                        name: '零時差漏洞預警',
+                        desc: `深夜收到系統緊急通知：
+發現嚴重的零時差安全漏洞，
+需要立即進行系統更新。
+但你正在處理一個重要的客戶報表。
+
+A. 立即儲存工作並更新，主動通知團隊成員
+B. 設定在一小時後自動更新，先完成手上工作
+C. 關閉更新提醒，等報表完成再處理`,
                         type: 'level',
                         handler: (level) => {
                             if (level === '強') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 200 },
-                                    message: `${currentPlayer.name} 軟體更新強，經濟值加200！`
+                                    message: `${currentPlayer.name} 即時更新成功防禦了可能的攻擊，保護了公司系統。`
                                 };
                             } else if (level === '中') {
                                 return {
-                                    message: `${currentPlayer.name} 軟體更新中，經濟值不變。`
+                                    message: `${currentPlayer.name} 的系統最終得到更新，但存在短暫的風險期。`
                                 };
                             } else {
                                 return {
                                     playerUpdates: { economy: Math.max(0, currentPlayer.economy - 100) },
-                                    message: `${currentPlayer.name} 軟體更新弱，經濟值扣100！`
+                                    message: `警告！${currentPlayer.name} 延遲更新導致系統暴露在高風險狀態！`
                                 };
                             }
                         }
