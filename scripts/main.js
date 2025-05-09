@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             VictoryCondition.checkVictoryCondition();
             // 清空勾選並結束回合
             CardEffects.clearSelectedCards();
-            TurnController.endTurn();
+            TurnController.endCurrentTurn();
         } catch (error) {
             console.error('執行卡牌效果時發生錯誤：', error);
         }
