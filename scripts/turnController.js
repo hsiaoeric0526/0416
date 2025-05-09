@@ -99,8 +99,6 @@ const TurnController = (() => {
             } else {
                 // 記錄狀態結束
                 GameStateTracker.addHistoryEntry(`${player.name} 的 ${updatedStatus.name} 狀態結束`);
-
-                // 更新 UI
                 updateStatusUI(playerKey);
             }
         });
@@ -123,42 +121,50 @@ const TurnController = (() => {
 
         // 基於狀態類型應用效果
         switch (status.type) {
-            case 'health_regen':
-                // 生命值回復
-                const newHealth = player.health + status.value;
-                playerUpdateMethod({ health: newHealth });
-                GameStateTracker.addHistoryEntry(`${player.name} 回復了 ${status.value} 點生命值（${status.name}）`);
+            // case 'health_regen':
+            //     // 生命值回復
+            //     const newHealth = player.health + status.value;
+            //     playerUpdateMethod({ health: newHealth });
+            //     GameStateTracker.addHistoryEntry(`${player.name} 回復了 ${status.value} 點生命值（${status.name}）`);
+            //     break;
+
+            // case 'economy_boost':
+            //     // 經濟值增加
+            //     const newEconomy = player.economy + status.value;
+            //     playerUpdateMethod({ economy: newEconomy });
+            //     GameStateTracker.addHistoryEntry(`${player.name} 獲得了 ${status.value} 點經濟值（${status.name}）`);
+            //     break;
+
+            // case 'damage_over_time':
+            //     // 持續傷害
+            //     const reducedHealth = Math.max(0, player.health - status.value);
+            //     playerUpdateMethod({ health: reducedHealth });
+            //     GameStateTracker.addHistoryEntry(`${player.name} 受到 ${status.value} 點傷害（${status.name}）`);
+            //     break;
+
+            // case 'economy_drain':
+            //     // 經濟值消耗
+            //     const reducedEconomy = Math.max(0, player.economy - status.value);
+            //     playerUpdateMethod({ economy: reducedEconomy });
+            //     GameStateTracker.addHistoryEntry(`${player.name} 失去了 ${status.value} 點經濟值（${status.name}）`);
+            //     break;
+
+            // // 攻擊加成和減傷效果不需要每回合應用效果，它們是在卡牌使用時被套用
+            // // 但我們仍然需要記錄它們的存在
+            // case 'attack_boost':
+            //     GameStateTracker.addHistoryEntry(`${player.name} 的攻擊加成效果持續中（${status.name}），還剩 ${status.duration} 回合`);
+            //     break;
+
+            // case 'damage_reduction':
+            //     GameStateTracker.addHistoryEntry(`${player.name} 的減傷效果持續中（${status.name}），還剩 ${status.duration} 回合`);
+            //     break;
+
+            case 'economy_shield':
+                GameStateTracker.addHistoryEntry(`${player.name} 的經濟值抵銷盾（${status.name}）持續中，還剩 ${status.duration} 回合`);
                 break;
 
-            case 'economy_boost':
-                // 經濟值增加
-                const newEconomy = player.economy + status.value;
-                playerUpdateMethod({ economy: newEconomy });
-                GameStateTracker.addHistoryEntry(`${player.name} 獲得了 ${status.value} 點經濟值（${status.name}）`);
-                break;
-
-            case 'damage_over_time':
-                // 持續傷害
-                const reducedHealth = Math.max(0, player.health - status.value);
-                playerUpdateMethod({ health: reducedHealth });
-                GameStateTracker.addHistoryEntry(`${player.name} 受到 ${status.value} 點傷害（${status.name}）`);
-                break;
-
-            case 'economy_drain':
-                // 經濟值消耗
-                const reducedEconomy = Math.max(0, player.economy - status.value);
-                playerUpdateMethod({ economy: reducedEconomy });
-                GameStateTracker.addHistoryEntry(`${player.name} 失去了 ${status.value} 點經濟值（${status.name}）`);
-                break;
-
-            // 攻擊加成和減傷效果不需要每回合應用效果，它們是在卡牌使用時被套用
-            // 但我們仍然需要記錄它們的存在
-            case 'attack_boost':
-                GameStateTracker.addHistoryEntry(`${player.name} 的攻擊加成效果持續中（${status.name}），還剩 ${status.duration} 回合`);
-                break;
-
-            case 'damage_reduction':
-                GameStateTracker.addHistoryEntry(`${player.name} 的減傷效果持續中（${status.name}），還剩 ${status.duration} 回合`);
+            case 'health_shield':
+                GameStateTracker.addHistoryEntry(`${player.name} 的生命值抵銷盾（${status.name}）持續中，還剩 ${status.duration} 回合`);
                 break;
 
             default:
