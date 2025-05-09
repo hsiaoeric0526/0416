@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 結束回合按鈕
     const endTurnBtn = document.getElementById('end-turn');
-    endTurnBtn.addEventListener('click', () => {
+    endTurnBtn.addEventListener('click', async () => {
         // 取得所有已勾選卡牌
         const selectedCards = CardEffects.getSelectedCards();
         const gameState = GameInit.getGameState();
@@ -23,20 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const opponentPlayerKey = currentPlayerKey === 'A' ? 'B' : 'A';
         let currentPlayer = currentPlayerKey === 'A' ? GameInit.getPlayerA() : GameInit.getPlayerB();
         let opponentPlayer = opponentPlayerKey === 'A' ? GameInit.getPlayerA() : GameInit.getPlayerB();
-        // 依序執行卡牌效果
-        selectedCards.forEach(card => {
-            // 經濟足夠才執行
+        // 依序執行卡牌效果，支援 Promise
+        for (const card of selectedCards) {
             if (currentPlayer.economy >= card.cost) {
-                CardEffects.playCard(card);
+                const result = CardEffects.playCard(card);
+                if (result && typeof result.then === 'function') {
+                    await result;
+                }
                 // 更新玩家狀態以便下一張卡判斷經濟
                 currentPlayer = currentPlayerKey === 'A' ? GameInit.getPlayerA() : GameInit.getPlayerB();
-                opponentPlayer = opponentPlayerKey === 'A' ? GameInit.getPlayerA() : GameInit.getPlayerB();
             }
-        });
-        // 清空勾選
+        }
         CardEffects.clearSelectedCards();
-        // 結束回合
-        TurnController.endCurrentTurn();
+        TurnController.endTurn();
     });
 
     // 重置遊戲按鈕

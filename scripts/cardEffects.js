@@ -217,54 +217,48 @@ const CardEffects = (() => {
             cardType: 'special',
             targetType: 'both',
             effect: (currentPlayer, opponentPlayer) => {
-                // 隨機選擇一個事件
+                // 定義事件資料
                 const events = [
                     {
                         name: '密碼強度檢測遊戲',
-                        effect: () => {
-                            const password = prompt('請設置一個密碼（將會檢測密碼安全性）:');
+                        desc: '請輸入一組密碼，系統將檢測其強度。',
+                        type: 'password',
+                        handler: (input) => {
                             let strength = 0;
-                            if (!password) {
-                                return { message: `${currentPlayer.name} 放棄了設定密碼` };
-                            }
-                            if (password.length >= 8) strength += 1;
-                            if (/\d/.test(password)) strength += 1;
-                            if (/[a-z]/.test(password)) strength += 1;
-                            if (/[A-Z]/.test(password)) strength += 1;
-                            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-                            let result = null;
+                            if (!input) return { message: `${currentPlayer.name} 放棄了設定密碼` };
+                            if (input.length >= 8) strength += 1;
+                            if (/\d/.test(input)) strength += 1;
+                            if (/[a-z]/.test(input)) strength += 1;
+                            if (/[A-Z]/.test(input)) strength += 1;
+                            if (/[^A-Za-z0-9]/.test(input)) strength += 1;
                             if (strength >= 4) {
-                                // 強
-                                result = {
+                                return {
                                     playerUpdates: { health: currentPlayer.health + 200 },
                                     message: `${currentPlayer.name} 設置了強密碼，生命值加200！`
                                 };
                             } else if (strength === 3) {
-                                // 中
-                                result = {
+                                return {
                                     message: `${currentPlayer.name} 設置了中等密碼，生命值不變。`
                                 };
                             } else {
-                                // 弱
-                                result = {
+                                return {
                                     playerUpdates: { health: Math.max(1, currentPlayer.health - 200) },
                                     message: `${currentPlayer.name} 設置了弱密碼，生命值扣200！`
                                 };
                             }
-                            return result;
                         }
                     },
                     {
                         name: '二步驟驗證',
-                        effect: () => {
-                            const level = prompt('請評估你目前的二步驟驗證強度（強/中/弱）：');
-                            if (!level) return { message: `${currentPlayer.name} 未選擇驗證強度` };
-                            if (level.includes('強')) {
+                        desc: '請選擇你目前的二步驟驗證強度。',
+                        type: 'level',
+                        handler: (level) => {
+                            if (level === '強') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 500 },
                                     message: `${currentPlayer.name} 二步驟驗證強，經濟值加500！`
                                 };
-                            } else if (level.includes('中')) {
+                            } else if (level === '中') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 100 },
                                     message: `${currentPlayer.name} 二步驟驗證中，經濟值加100！`
@@ -279,15 +273,15 @@ const CardEffects = (() => {
                     },
                     {
                         name: '備份設置決策',
-                        effect: () => {
-                            const level = prompt('請評估你的備份設置（強/中/弱）：');
-                            if (!level) return { message: `${currentPlayer.name} 未選擇備份強度` };
-                            if (level.includes('強')) {
+                        desc: '請選擇你的備份設置強度。',
+                        type: 'level',
+                        handler: (level) => {
+                            if (level === '強') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 300 },
                                     message: `${currentPlayer.name} 備份設置強，生命值加300！`
                                 };
-                            } else if (level.includes('中')) {
+                            } else if (level === '中') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 200 },
                                     message: `${currentPlayer.name} 備份設置中，生命值加200！`
@@ -302,15 +296,15 @@ const CardEffects = (() => {
                     },
                     {
                         name: '選擇安全的網路環境',
-                        effect: () => {
-                            const level = prompt('請評估你選擇的網路環境安全性（強/中/弱）：');
-                            if (!level) return { message: `${currentPlayer.name} 未選擇網路安全強度` };
-                            if (level.includes('強')) {
+                        desc: '請選擇你選擇的網路環境安全性。',
+                        type: 'level',
+                        handler: (level) => {
+                            if (level === '強') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 500 },
                                     message: `${currentPlayer.name} 網路環境安全強，生命值加500！`
                                 };
-                            } else if (level.includes('中')) {
+                            } else if (level === '中') {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 100 },
                                     message: `${currentPlayer.name} 網路環境安全中，生命值加100！`
@@ -325,15 +319,15 @@ const CardEffects = (() => {
                     },
                     {
                         name: '軟體更新決策',
-                        effect: () => {
-                            const level = prompt('請評估你的軟體更新策略（強/中/弱）：');
-                            if (!level) return { message: `${currentPlayer.name} 未選擇更新強度` };
-                            if (level.includes('強')) {
+                        desc: '請選擇你的軟體更新策略。',
+                        type: 'level',
+                        handler: (level) => {
+                            if (level === '強') {
                                 return {
                                     playerUpdates: { economy: currentPlayer.economy + 200 },
                                     message: `${currentPlayer.name} 軟體更新強，經濟值加200！`
                                 };
-                            } else if (level.includes('中')) {
+                            } else if (level === '中') {
                                 return {
                                     message: `${currentPlayer.name} 軟體更新中，經濟值不變。`
                                 };
@@ -346,16 +340,42 @@ const CardEffects = (() => {
                         }
                     }
                 ];
-
                 // 隨機選擇一個事件
                 const randomEvent = events[Math.floor(Math.random() * events.length)];
-                const eventResult = randomEvent.effect();
-                const result = { message: `${currentPlayer.name} 使用了隨機事件卡，觸發了「${randomEvent.name}」事件！` };
-                if (!eventResult) return result;
-                if (eventResult.message) result.message = eventResult.message;
-                if (eventResult.playerUpdates) result.playerUpdates = eventResult.playerUpdates;
-                if (eventResult.opponentUpdates) result.opponentUpdates = eventResult.opponentUpdates;
-                return result;
+                // 顯示 modal
+                return new Promise((resolve) => {
+                    const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+                    document.getElementById('eventModalLabel').textContent = randomEvent.name;
+                    document.getElementById('event-desc').textContent = randomEvent.desc;
+                    document.getElementById('event-result').textContent = '';
+                    const interactDiv = document.getElementById('event-interact');
+                    interactDiv.innerHTML = '';
+                    // 密碼事件：文字輸入框
+                    if (randomEvent.type === 'password') {
+                        interactDiv.innerHTML = `<input type="text" class="form-control mb-2" id="event-password-input" placeholder="請輸入密碼">` +
+                            `<button class="btn btn-primary w-100" id="event-password-btn">確認</button>`;
+                        document.getElementById('event-password-btn').onclick = () => {
+                            const val = document.getElementById('event-password-input').value;
+                            const result = randomEvent.handler(val);
+                            document.getElementById('event-result').textContent = result.message;
+                            setTimeout(() => { modal.hide(); resolve(result); }, 1200);
+                        };
+                    } else {
+                        // 其餘事件：三個分級按鈕
+                        ['強', '中', '弱'].forEach(level => {
+                            const btn = document.createElement('button');
+                            btn.className = `btn btn-outline-primary m-1`;
+                            btn.textContent = level;
+                            btn.onclick = () => {
+                                const result = randomEvent.handler(level);
+                                document.getElementById('event-result').textContent = result.message;
+                                setTimeout(() => { modal.hide(); resolve(result); }, 1200);
+                            };
+                            interactDiv.appendChild(btn);
+                        });
+                    }
+                    modal.show();
+                });
             }
         }
     ];
