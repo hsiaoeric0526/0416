@@ -433,11 +433,8 @@ C. 關閉更新提醒，等報表完成再處理`,
                         const levels = ['強', '中', '弱'];
 
                         eventOptions.forEach((option, index) => {
-                            const buttonClass = index === 0 ? 'btn-success' :
-                                index === 1 ? 'btn-warning' :
-                                    'btn-danger';
                             interactDiv.innerHTML += `
-                                <button class="btn ${buttonClass} mb-2" onclick="(function(){
+                                <button class="btn btn-outline-primary mb-2 w-100" onclick="(function(){
                                     const result = ${randomEvent.name.replace(/[^a-zA-Z]/g, '_')}_handler('${levels[index]}');
                                     document.getElementById('event-result').textContent = result.message;
                                     setTimeout(() => { 
