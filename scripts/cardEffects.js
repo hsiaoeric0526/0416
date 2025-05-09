@@ -362,6 +362,8 @@ const CardEffects = (() => {
 
     // 當前可用卡牌
     let availableCards = [];
+    // 當前已勾選卡牌 id
+    let selectedCardIds = [];
 
     /**
      * 生成可用卡牌（每回合）
@@ -370,49 +372,58 @@ const CardEffects = (() => {
         const gameState = GameInit.getGameState();
         const currentPlayerKey = gameState.currentPlayer;
         const currentPlayer = currentPlayerKey === 'A' ? GameInit.getPlayerA() : GameInit.getPlayerB();
-
-        // 隨機選擇卡牌（這裡為了簡單，我們使用所有卡牌，實際遊戲可能需要隨機選擇部分卡牌）
         availableCards = [...cardDatabase];
-
-        // 渲染卡牌
+        selectedCardIds = [];
         renderCards(currentPlayer);
     };
 
     /**
-     * 渲染卡牌到 UI
+     * 渲染卡牌為勾選清單
      * @param {Object} currentPlayer - 當前玩家
      */
     const renderCards = (currentPlayer) => {
         const cardContainer = document.getElementById('card-container');
         cardContainer.innerHTML = '';
-
         availableCards.forEach(card => {
-            // 檢查卡牌是否可用（經濟是否足夠）
             const isAffordable = currentPlayer.economy >= card.cost;
-
-            // 創建卡牌元素
+            const isChecked = selectedCardIds.includes(card.id);
             const cardElement = document.createElement('div');
-            cardElement.className = `col`;
+            cardElement.className = 'col';
             cardElement.innerHTML = `
-                <div class="card game-card h-100 ${!isAffordable ? 'card-disabled' : ''}" data-card-id="${card.id}">
+                <div class="card game-card h-100 ${!isAffordable ? 'card-disabled' : ''}">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span class="card-title">${card.name}</span>
                         <span class="card-cost">${card.cost}</span>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text small mb-0">${card.description}</p>
+                    <div class="card-body d-flex align-items-center gap-2">
+                        <input type="checkbox" class="form-check-input" id="card-check-${card.id}" ${isChecked ? 'checked' : ''} ${!isAffordable ? 'disabled' : ''} />
+                        <label for="card-check-${card.id}" class="mb-0 card-text small">${card.description}</label>
                     </div>
                 </div>
             `;
-
-            // 為可負擔的卡牌添加點擊事件
-            if (isAffordable) {
-                cardElement.querySelector('.game-card').addEventListener('click', () => playCard(card));
-            }
-
+            // 勾選事件
+            const checkbox = cardElement.querySelector('input[type="checkbox"]');
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    if (!selectedCardIds.includes(card.id)) {
+                        selectedCardIds.push(card.id);
+                    }
+                } else {
+                    selectedCardIds = selectedCardIds.filter(id => id !== card.id);
+                }
+            });
             cardContainer.appendChild(cardElement);
         });
     };
+
+    /**
+     * 取得已勾選卡牌
+     */
+    const getSelectedCards = () => selectedCardIds.map(id => availableCards.find(card => card.id === id));
+    /**
+     * 清空已勾選卡牌
+     */
+    const clearSelectedCards = () => { selectedCardIds = []; };
 
     /**
      * 使用卡牌
@@ -576,6 +587,8 @@ const CardEffects = (() => {
     return {
         generateAvailableCards,
         clearCards,
-        getCardById: (id) => cardDatabase.find(card => card.id === id)
+        getCardById: (id) => cardDatabase.find(card => card.id === id),
+        getSelectedCards,
+        clearSelectedCards
     };
 })(); 
