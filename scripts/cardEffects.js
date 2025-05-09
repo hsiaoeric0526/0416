@@ -589,6 +589,7 @@ const CardEffects = (() => {
         clearCards,
         getCardById: (id) => cardDatabase.find(card => card.id === id),
         getSelectedCards,
-        clearSelectedCards
+        clearSelectedCards,
+        playCard
     };
 })(); 
