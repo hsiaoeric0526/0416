@@ -220,200 +220,127 @@ const CardEffects = (() => {
                 // 隨機選擇一個事件
                 const events = [
                     {
-                        name: '設定密碼',
+                        name: '密碼強度檢測遊戲',
                         effect: () => {
-                            // 提示用戶輸入密碼
                             const password = prompt('請設置一個密碼（將會檢測密碼安全性）:');
-
-                            // 檢查密碼強度
                             let strength = 0;
-                            let feedback = '';
-
                             if (!password) {
-                                // 如果用戶取消輸入或未輸入任何內容
-                                return {
-                                    message: `${currentPlayer.name} 放棄了設定密碼`
-                                };
+                                return { message: `${currentPlayer.name} 放棄了設定密碼` };
                             }
-
-                            // 檢查密碼長度
                             if (password.length >= 8) strength += 1;
-
-                            // 檢查是否包含數字
                             if (/\d/.test(password)) strength += 1;
-
-                            // 檢查是否包含小寫字母
                             if (/[a-z]/.test(password)) strength += 1;
-
-                            // 檢查是否包含大寫字母
                             if (/[A-Z]/.test(password)) strength += 1;
-
-                            // 檢查是否包含特殊字符
                             if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-
-                            // 根據強度提供反饋
                             let result = null;
-                            if (strength <= 2) {
-                                // 弱密碼 - 扣生命值
-                                feedback = '您的密碼安全性低，容易被暴力破解！';
-                                result = {
-                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 200) },
-                                    message: `${currentPlayer.name} 設置了弱密碼，受到資安漏洞攻擊，損失 200 點生命值！`
-                                };
-                            } else {
-                                // 強密碼 - 加生命值
-                                feedback = '您的密碼安全性高，恭喜！';
+                            if (strength >= 4) {
+                                // 強
                                 result = {
                                     playerUpdates: { health: currentPlayer.health + 200 },
-                                    message: `${currentPlayer.name} 設置了強密碼，增強了帳戶安全性，恢復 200 點生命值！`
+                                    message: `${currentPlayer.name} 設置了強密碼，生命值加200！`
+                                };
+                            } else if (strength === 3) {
+                                // 中
+                                result = {
+                                    message: `${currentPlayer.name} 設置了中等密碼，生命值不變。`
+                                };
+                            } else {
+                                // 弱
+                                result = {
+                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 200) },
+                                    message: `${currentPlayer.name} 設置了弱密碼，生命值扣200！`
                                 };
                             }
-
-                            // 顯示密碼強度反饋
-                            alert(`密碼強度評估：${strength}/5\n${feedback}`);
-
                             return result;
                         }
                     },
                     {
                         name: '二步驟驗證',
                         effect: () => {
-                            // 詢問用戶是否啟用二步驟驗證
-                            const enable2FA = confirm('是否啟用二步驟驗證來保護您的帳戶？');
-
-                            if (enable2FA) {
-                                // 模擬驗證過程
-                                const verificationMethod = prompt('請選擇驗證方式（1: 簡訊驗證碼  2: 電子郵件  3: 認證應用程式）：');
-
-                                // 添加減傷效果
-                                const defenseBoostEffect = {
-                                    name: '二步驟驗證',
-                                    type: 'damage_reduction',
-                                    value: 0.3, // 30% 減傷
-                                    duration: 3,
-                                    isPositive: true
-                                };
-
-                                const newStatus = [...currentPlayer.status, defenseBoostEffect];
-
+                            const level = prompt('請評估你目前的二步驟驗證強度（強/中/弱）：');
+                            if (!level) return { message: `${currentPlayer.name} 未選擇驗證強度` };
+                            if (level.includes('強')) {
                                 return {
-                                    playerUpdates: {
-                                        health: currentPlayer.health + 300,
-                                        status: newStatus
-                                    },
-                                    message: `${currentPlayer.name} 啟用了二步驟驗證，增加了 300 點生命值並獲得 30% 的攻擊減免效果，持續 3 回合！`
+                                    playerUpdates: { economy: currentPlayer.economy + 500 },
+                                    message: `${currentPlayer.name} 二步驟驗證強，經濟值加500！`
+                                };
+                            } else if (level.includes('中')) {
+                                return {
+                                    playerUpdates: { economy: currentPlayer.economy + 100 },
+                                    message: `${currentPlayer.name} 二步驟驗證中，經濟值加100！`
                                 };
                             } else {
-                                // 未啟用二步驟驗證的後果
                                 return {
-                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 400) },
-                                    message: `${currentPlayer.name} 選擇不啟用二步驟驗證，帳戶被駭客入侵，損失 400 點生命值！`
+                                    playerUpdates: { economy: Math.max(0, currentPlayer.economy - 500) },
+                                    message: `${currentPlayer.name} 二步驟驗證弱，經濟值扣500！`
                                 };
                             }
                         }
                     },
                     {
-                        name: '定期備份',
+                        name: '備份設置決策',
                         effect: () => {
-                            // 詢問用戶是否設置自動備份
-                            const enableBackup = confirm('是否設置自動備份以保護您的資料？');
-
-                            if (enableBackup) {
-                                // 選擇備份頻率和位置
-                                const backupFrequency = prompt('請選擇備份頻率（1: 每天  2: 每週  3: 每月）：');
-                                const backupLocation = prompt('請選擇備份位置（1: 雲端  2: 本地硬碟）：');
-
-                                // 添加減傷效果
-                                const defenseBoostEffect = {
-                                    name: '資料備份',
-                                    type: 'damage_reduction',
-                                    value: 0.5, // 50% 減傷
-                                    duration: 2,
-                                    isPositive: true
-                                };
-
-                                const newStatus = [...currentPlayer.status, defenseBoostEffect];
-
+                            const level = prompt('請評估你的備份設置（強/中/弱）：');
+                            if (!level) return { message: `${currentPlayer.name} 未選擇備份強度` };
+                            if (level.includes('強')) {
                                 return {
-                                    playerUpdates: {
-                                        health: currentPlayer.health + 500,
-                                        status: newStatus
-                                    },
-                                    message: `${currentPlayer.name} 設置了定期資料備份，即使遭遇勒索病毒也能迅速恢復，增加 500 點生命值並獲得 50% 的攻擊減免效果，持續 2 回合！`
+                                    playerUpdates: { health: currentPlayer.health + 300 },
+                                    message: `${currentPlayer.name} 備份設置強，生命值加300！`
                                 };
-                            } else {
-                                // 未設置備份的後果
-                                return {
-                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 700) },
-                                    message: `${currentPlayer.name} 未設置備份，遭遇勒索病毒攻擊導致重要資料永久丟失，損失 700 點生命值！`
-                                };
-                            }
-                        }
-                    },
-                    {
-                        name: '使用公用網路的風險',
-                        effect: () => {
-                            // 詢問用戶是否使用不安全的公用網路
-                            const usePublicWifi = confirm('您需要處理重要工作，但只有咖啡店的公共Wi-Fi可用。是否使用？');
-
-                            if (usePublicWifi) {
-                                // 詢問是否使用VPN
-                                const useVPN = confirm('是否使用VPN保護您的連線？');
-
-                                if (useVPN) {
-                                    // 使用VPN的好處
-                                    const defenseBoostEffect = {
-                                        name: 'VPN保護',
-                                        type: 'damage_reduction',
-                                        value: 0.2, // 20% 減傷
-                                        duration: 2,
-                                        isPositive: true
-                                    };
-
-                                    const newStatus = [...currentPlayer.status, defenseBoostEffect];
-
-                                    return {
-                                        playerUpdates: { status: newStatus },
-                                        message: `${currentPlayer.name} 在公共Wi-Fi上使用了VPN保護連線，獲得 20% 的攻擊減免效果，持續 2 回合！`
-                                    };
-                                } else {
-                                    // 使用不安全公共網路的後果
-                                    return {
-                                        playerUpdates: {
-                                            health: Math.max(1, currentPlayer.health - 400),
-                                            economy: Math.max(0, currentPlayer.economy - 200)
-                                        },
-                                        message: `${currentPlayer.name} 在未受保護的公共Wi-Fi上處理敏感資訊，遭遇中間人攻擊，個人資料被竊取，損失 400 點生命值和 200 點經濟值！`
-                                    };
-                                }
-                            } else {
-                                // 避開公用網路的好處
+                            } else if (level.includes('中')) {
                                 return {
                                     playerUpdates: { health: currentPlayer.health + 200 },
-                                    message: `${currentPlayer.name} 謹慎地避開了不安全的公共Wi-Fi，保護了個人資料安全，恢復 200 點生命值！`
+                                    message: `${currentPlayer.name} 備份設置中，生命值加200！`
+                                };
+                            } else {
+                                return {
+                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 100) },
+                                    message: `${currentPlayer.name} 備份設置弱，生命值扣100！`
                                 };
                             }
                         }
                     },
                     {
-                        name: '定期更新軟體',
+                        name: '選擇安全的網路環境',
                         effect: () => {
-                            // 詢問用戶是否立即更新系統
-                            const updateNow = confirm('您的系統有重要安全更新，是否立即更新？（如延遲更新可能會有安全風險）');
-
-                            if (updateNow) {
-                                // 立即更新的好處
+                            const level = prompt('請評估你選擇的網路環境安全性（強/中/弱）：');
+                            if (!level) return { message: `${currentPlayer.name} 未選擇網路安全強度` };
+                            if (level.includes('強')) {
                                 return {
-                                    playerUpdates: { economy: currentPlayer.economy + 300 },
-                                    message: `${currentPlayer.name} 及時更新了系統，修補了安全漏洞，獲得 300 點經濟值！`
+                                    playerUpdates: { health: currentPlayer.health + 500 },
+                                    message: `${currentPlayer.name} 網路環境安全強，生命值加500！`
+                                };
+                            } else if (level.includes('中')) {
+                                return {
+                                    playerUpdates: { health: currentPlayer.health + 100 },
+                                    message: `${currentPlayer.name} 網路環境安全中，生命值加100！`
                                 };
                             } else {
-                                // 延遲更新的後果
                                 return {
-                                    playerUpdates: {
-                                        health: Math.max(1, currentPlayer.health - 500)
-                                    },
-                                    message: `${currentPlayer.name} 延遲更新系統，安全漏洞被駭客利用，遭遇病毒攻擊，損失 500 點生命值！`
+                                    playerUpdates: { health: Math.max(1, currentPlayer.health - 500) },
+                                    message: `${currentPlayer.name} 網路環境安全弱，生命值扣500！`
+                                };
+                            }
+                        }
+                    },
+                    {
+                        name: '軟體更新決策',
+                        effect: () => {
+                            const level = prompt('請評估你的軟體更新策略（強/中/弱）：');
+                            if (!level) return { message: `${currentPlayer.name} 未選擇更新強度` };
+                            if (level.includes('強')) {
+                                return {
+                                    playerUpdates: { economy: currentPlayer.economy + 200 },
+                                    message: `${currentPlayer.name} 軟體更新強，經濟值加200！`
+                                };
+                            } else if (level.includes('中')) {
+                                return {
+                                    message: `${currentPlayer.name} 軟體更新中，經濟值不變。`
+                                };
+                            } else {
+                                return {
+                                    playerUpdates: { economy: Math.max(0, currentPlayer.economy - 100) },
+                                    message: `${currentPlayer.name} 軟體更新弱，經濟值扣100！`
                                 };
                             }
                         }
@@ -422,31 +349,12 @@ const CardEffects = (() => {
 
                 // 隨機選擇一個事件
                 const randomEvent = events[Math.floor(Math.random() * events.length)];
-
-                // 觸發事件效果
                 const eventResult = randomEvent.effect();
-
-                // 組合最終結果
-                const result = {
-                    message: `${currentPlayer.name} 使用了隨機事件卡，觸發了「${randomEvent.name}」事件！`
-                };
-
-                if (!eventResult) {
-                    return result;
-                }
-
-                if (eventResult.message) {
-                    result.message = eventResult.message;
-                }
-
-                if (eventResult.playerUpdates) {
-                    result.playerUpdates = eventResult.playerUpdates;
-                }
-
-                if (eventResult.opponentUpdates) {
-                    result.opponentUpdates = eventResult.opponentUpdates;
-                }
-
+                const result = { message: `${currentPlayer.name} 使用了隨機事件卡，觸發了「${randomEvent.name}」事件！` };
+                if (!eventResult) return result;
+                if (eventResult.message) result.message = eventResult.message;
+                if (eventResult.playerUpdates) result.playerUpdates = eventResult.playerUpdates;
+                if (eventResult.opponentUpdates) result.opponentUpdates = eventResult.opponentUpdates;
                 return result;
             }
         }
